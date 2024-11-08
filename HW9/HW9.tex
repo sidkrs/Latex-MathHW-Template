@@ -1,0 +1,348 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath, amsthm, amssymb, float, graphicx, tensor, commath, mdframed, xcolor}
+\usepackage[bottom]{footmisc}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage[justification=centering]{caption}
+\usepackage[letterpaper,margin=1in,bottom=0.7in]{geometry}
+\usepackage{enumerate, cancel}
+\usepackage{ifthen}
+
+% Redefining vector and unit vector commands
+\newcommand{\vect}[1]{\ensuremath{\mathbf{#1}}} % for vectors
+\newcommand{\unitvect}[1]{\ensuremath{\mathbf{\hat{#1}}}} % for unit vectors
+
+
+% Custom preamble for sheet title and course information
+\newcommand{\SheetTitle}[3]{
+  {\noindent\Huge\bf  \\[0.5\baselineskip] {\fontfamily{cmr}\selectfont  Problem Set IX}}\\[2\baselineskip] % Title
+  { {\bf \fontfamily{cmr}\selectfont #1}\\ {\textit{\fontfamily{cmr}\selectfont \today}}}    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~     {\large \textsc{Siddarth Jaya Kerkar}\thanks{With #3}} \\
+  {Professor Gabor Lippner}
+  \\[1.4\baselineskip]}
+
+\renewcommand*{\qedsymbol}{$\blacksquare$}
+
+% Environment for solutions using the proof environment
+\newenvironment{s}
+  {\begin{mdframed}\begin{proof}[Solution.]}
+  {\end{proof}\end{mdframed}}
+
+% Set the theorem style to "definition" (upright text)
+\theoremstyle{definition}
+
+% Define the problem environment with upright text
+\newtheorem{p}{Problem}
+
+% Defin the example environment with upright text
+\newtheorem{example}{Example}
+
+% Define solution environment with a box
+\newenvironment{solution}
+  {\begin{mdframed}[linewidth=0.5pt, roundcorner=10pt, linecolor=black]\begin{proof}[\bfseries Solution]}
+  {\qedhere\end{proof}\end{mdframed}}
+
+\definecolor{bluee}{HTML}{046DE9}
+\definecolor{redd}{HTML}{CE1F15}
+\definecolor{greenn}{HTML}{28AC3C}
+\definecolor{yelloww}{HTML}{EAC02E}
+\definecolor{purplee}{HTML}{BE4FE1}
+
+\renewcommand{\footnoterule}{%
+    \kern -3pt
+    \hrule width 0.635\textwidth height 0.5pt
+    \kern 2pt
+}
+
+% Define the remark environment using mdframed's newmdtheoremenv
+\newmdtheoremenv[
+  linewidth=0.5pt,
+  roundcorner=10pt,
+  linecolor=black,
+  backgroundcolor=white, % You can change this to a different color if desired
+  skipabove=\topsep,
+  skipbelow=\topsep,
+  innertopmargin=6pt,
+  innerbottommargin=6pt,
+  innerleftmargin=10pt,
+  innerrightmargin=10pt
+]{remark}{Remark}
+
+%custom page colors
+\definecolor{lightpurple}{HTML}{EDE8F5}
+\definecolor{lightwhite}{HTML}{fefae0}
+
+
+
+% ***********************************************************
+% ********************** END HEADER *************************
+% ***********************************************************
+
+
+\begin{document}
+
+\SheetTitle{Introduction to Graph Theory, MATH 3545}{I}
+
+\setcounter{section}{8}
+\section{Planar Graphs}
+
+% Problem 1
+\vspace{0.9cm}
+\begin{p}
+  Given a planar drawing of a connected planar graph \( G \), imagine that the infinite face is the ocean, the vertices are towers, the edges are dams, and the finite faces of the drawing are parcels. Let \( n \) denote the number of nodes, \( e \) the number of edges, and \( f \) the number of faces in the drawing.
+  
+  \begin{enumerate}
+      \item Suppose you want to flood each parcel by opening some dams. What is the smallest number of dams you have to open to do this?
+      \item After the flooding, what can you say about the dams that remained closed? How many dams remained closed?
+      \item Show that \( n + f = e + 2 \).
+  \end{enumerate}
+  \end{p}
+  
+  \begin{solution} \emph{Breaking down the question into parts:}\\
+  \begin{enumerate}
+      \item \textbf{Minimum number of dams to open to flood each parcel:}
+  
+      To flood each parcel, we need to create a path for the water from the ocean (infinite face) to each parcel (finite face). This can be achieved by opening one dam (edge) on the boundary of each parcel. Since there are \( f - 1 \) finite faces (excluding the infinite face), the smallest number of dams we have to open is:
+      \[
+      \text{Number of dams to open} = f - 1.
+      \]
+  
+      \item \textbf{Dams that remained closed and their count:}
+  
+      After opening \( f - 1 \) dams, the remaining dams form a connected subgraph with no cycles, i.e., a spanning tree of \( G \). This is because removing one edge from each cycle (face) eliminates all cycles in the graph.
+  
+      A tree with \( n \) nodes has exactly \( n - 1 \) edges. Therefore, the number of dams that remained closed is:
+      \[
+      \text{Number of dams remained closed} = n - 1.
+      \]
+      Alternatively, since the total number of edges is \( e \) and we opened \( f - 1 \) dams, the number of dams that remained closed is:
+      \[
+      \text{Number of dams remained closed} = e - (f - 1).
+      \]
+  
+      \item \textbf{Showing that \( n + f = e + 2 \):}
+  
+      From Part B, we have the relationship:
+      \[
+      n - 1 = e - (f - 1).
+      \]
+      Simplifying the right-hand side:
+      \[
+      n - 1 = e - f + 1.
+      \]
+      Adding \( f \) to both sides:
+      \[
+      n - 1 + f = e + 1.
+      \]
+      Adding 1 to both sides:
+      \[
+      n + f = e + 2.
+      \]
+      This equation represents Euler's formula for planar graphs.
+  \end{enumerate}
+  \end{solution}
+  
+  
+
+% Problem 2}
+\vspace{0.9cm}
+\begin{p} 
+  Find an analogue of Euler's formula for graphs that are not connected. Denote the number of its components by \( c \).
+  \end{p}
+  
+  \begin{solution} 
+  Take the original Euler's formula:
+  
+  \[
+  n + f = e + 2.
+  \]
+  
+  As we add components, the numbers of nodes (\( n \)), edges (\( e \)), and faces (\( f \)) increase accordingly in the full planar graph. However, the constant 2 on the right side increases by the number of components, making it \( 2c \).
+  
+  Since we overcount the number of infinite faces by \( c - 1 \), we adjust the formula by subtracting \( c - 1 \) from the right side as each component is counting infinite face each time. \\
+  The final formula becomes:
+  
+  \[
+  n + f = e + 2c - (c - 1).
+  \]
+  Simplified to:
+  \[
+  n + f = e + c + 1.
+  \]
+  Or: 
+  \[
+  n - e + f = c + 1.
+  \]
+  
+\end{solution}
+  
+
+% Problem 3
+\vspace{0.9cm}
+\begin{p} 
+  Show that for bipartite simple planar graphs, $e \leq 2n - 4$. In particular, show that $K_{3,3}$ cannot be planar. 
+\end{p}
+\vspace{0.3cm}
+
+  \begin{solution}
+  \begin{proof} 
+  In any simple planar graph, the number of edges $e$ and faces $f$ satisfy the inequality $2e \geq r f$, where $r$ is the minimal length of the faces (the minimal number of edges forming the boundary of a face). This is because each face is bounded by at least $r$ edges, and each edge is shared by at most two faces. This minimum number of $r$ edges is $3$ for a simple planar graph.
+  
+  However, in a bipartite graph, all cycles are of even length, so the minimal cycle length is at least $4$. Therefore, in a bipartite planar graph, the minimal face length is at least $4$, and we have:
+  \[
+  2e \ge 4f.
+  \]
+  
+  From Euler's formula for connected planar graphs, we have:
+  \[
+  n - e + f = 2.
+  \]
+  
+  Using the inequality $2e \geq 4f$, we can write:
+  \[
+  f \leq \frac{1}{2} e.
+  \]
+  
+  Substituting $f$ from Euler's formula:
+  \[
+  f = 2 - n + e.
+  \]
+  
+  Combining the two expressions for $f$:
+  \[
+  2 - n + e \leq \frac{1}{2} e.
+  \]
+  
+  Subtracting $e$ from both sides:
+  \[
+  2 - n \leq -\frac{1}{2} e.
+  \]
+  
+  Multiplying both sides by $-2$ (which reverses the inequality sign):
+  \[
+  2n - 4 \ge e.
+  \]
+  
+  Thus, for any bipartite simple planar graph, the number of edges satisfies:
+  \[
+  e \leq 2n - 4.
+  \]
+  
+  Now, consider the complete bipartite graph $K_{3,3}$, which has $n = 6$ vertices and $e = 9$ edges. Substituting $n = 6$ into the inequality:
+  \[
+  e \leq 2(6) - 4 = 8.
+  \]
+  
+  Therefore, any bipartite simple planar graph with $6$ vertices can have at most $8$ edges. Since $K_{3,3}$ has $9$ edges, it cannot be planar. 
+  \end{proof} 
+  
+  \begin{remark} 
+  This result confirms that $K_{3,3}$ is non-planar.
+  \end{remark} 
+  \end{solution}
+  
+
+% Problem 4 
+\vspace{0.9cm}
+\begin{p}
+Draw a circle. Place \( n \) points on the circle, and connect each pair with a straight line segment. Assume no 3 segments pass through the same point.
+    \begin{enumerate}
+        \item (1pt) Explain why there are exactly \( \binom{n}{4} \) intersection points inside the circle.
+        \item (1pt) How many regions are formed inside the circle? (To make sure you are interpreting this correctly, the answer should be 1 if \( n = 1 \), 2 if \( n = 2 \), 4 if \( n = 3 \), and 8 if \( n = 4 \).)
+    \end{enumerate}
+\end{p}
+
+\begin{solution} {\emph{Breaking down the question into parts:}}
+\begin{enumerate}
+    \item \textbf{Number of intersection points:}
+    
+    Each pair of segments intersects at exactly one point inside the circle. 
+    To find the total number of intersection points, we need to choose 4 points from the \( n \) points on the circle. 
+    This can be done in \( \binom{n}{4} \) ways. Therefore, there are exactly \( \binom{n}{4} \) intersection points inside the circle.
+    
+    \item \textbf{Number of regions formed:}
+    
+    Knowing that we have $\binom{n}{4}$ intersections inside the circle and $n$ points along the circle we know that the total $n = \binom{n}{4} + n$ vertices.
+    
+    We know that each boundary vertex has a degree of $n+1$. This comes from the fact that $2$ degrees are from the two segments of the circle that meet at the vertex and the other $n-1$ degrees are from the $n-1$ nodes that connect to the vertex.
+    Each intersection point has a degree of $4$. Thus, the total contribution to the sum of degrees from interior points is $4*\binom{n}{4}$.
+    
+    Therefore, the total sum of degrees in the graph is 
+    \[
+    n*(n+1) + 4*\binom{n}{4}.
+    \]
+
+    From there we can get the number of edges in graph as 
+    \[
+    e = \frac{1}{2} \sum_{v \in V} \text{deg}(v) = \frac{1}{2}(n*(n+1) + 4*\binom{n}{4}).
+    \]
+    Finally, we can use Euler's formula to find the number of regions in the graph.
+    Since there are $f$ regions inside the circle and one outside the circle, we have
+    \[
+    n - e + (f + 1) = 2 \implies f = e - n + 1.
+    \]
+    Substituting $e = \frac{1}{2}*(n*(n+1) + 4*\binom{n}{4})$ and $n = \binom{n}{4} + n$ into the equation we get
+    \[
+    f = \frac{1}{2}*(n*(n+1) + 4*\binom{n}{4}) - (\binom{n}{4} + n) + 1.
+    \]
+    This can be simplified to
+    \[
+    f = \frac{n^2+n}{2} + 2\binom{n}{4} - \binom{n}{4} - n + 1 = \frac{n^2+n}{2} + \binom{n}{4} - n + 1.
+    \]
+    Since 
+    \[
+    \frac{n^2+n}{2} - n = \frac{n^2+n-2n}{2} = \frac{n^2-n}{2} = \binom{n}{2}
+    \]
+    $f$ can be further simplified to
+    \[
+    f = \binom{n}{2} + \binom{n}{4} + 1.
+    \]
+  \end{enumerate}
+    \begin{example}
+      Let \( f \) represent the number of regions formed inside a circle when \( n \) points are placed on the circle, and each pair of points is connected with a straight line segment. The formula to calculate \( f \) is:
+      \[
+          f = \frac{1}{2} \left( n(n+1) + 4 \binom{n}{4} \right) - \left( \binom{n}{4} + n \right) + 1.
+      \]
+      We will verify this formula for \( n = 1, 2, 3, \) and \( 4 \).
+      
+      \begin{itemize}
+          \item For \( n = 1 \):
+          \[
+          f = \frac{1}{2} \left( 1(1+1) + 4 \binom{1}{4} \right) - \left( \binom{1}{4} + 1 \right) + 1 = 1.
+          \]
+          Therefore, \( f = 1 \), which matches the expected value.
+      
+          \item For \( n = 2 \):
+          \[
+          f = \frac{1}{2} \left( 2(2+1) + 4 \binom{2}{4} \right) - \left( \binom{2}{4} + 2 \right) + 1 = 2.
+          \]
+          Thus, \( f = 2 \), which matches the expected value.
+      
+          \item For \( n = 3 \):
+          \[
+          f = \frac{1}{2} \left( 3(3+1) + 4 \binom{3}{4} \right) - \left( \binom{3}{4} + 3 \right) + 1 = 4.
+          \]
+          Therefore, \( f = 4 \), which matches the expected value.
+      
+          \item For \( n = 4 \):
+          \[
+          f = \frac{1}{2} \left( 4(4+1) + 4 \binom{4}{4} \right) - \left( \binom{4}{4} + 4 \right) + 1 = 8.
+          \]
+          Thus, \( f = 8 \), which matches the expected value.
+      \end{itemize}
+      
+      We have verified that the formula produces the correct number of regions for \( n = 1, 2, 3, \) and \( 4 \).
+      \end{example}
+
+
+\end{solution}
+
+
+  
+
+
+  
+
+  
+
+\footnotetext{With Désirée DeGennaro, Allison Kennedy, and Na'Ama Nevo}
+\end{document}
